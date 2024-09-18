@@ -1,0 +1,344 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Project1',
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.grey[800], fontSize: 16.0),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.indigo[50],
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+          ),
+        ),
+      ),
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() {
+    if (_usernameController.text == 'Gasipa28' &&
+        _passwordController.text == '280204') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MenuPage()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Username atau Password salah!')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                prefixIcon: Icon(Icons.person),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: Icon(Icons.lock),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _login,
+              child: Text('Login', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MenuPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Menu'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DataKelompokPage()));
+                },
+                child: Text('Data Mahasiswa', style: TextStyle(fontSize: 18)),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => KalkulatorPage()));
+                },
+                child: Text('Penjumlahan/Pengurangan',
+                    style: TextStyle(fontSize: 18)),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GanjilGenapPage()));
+                },
+                child: Text('Ganjil/Genap', style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DataKelompokPage extends StatelessWidget {
+  final List<Map<String, String>> dataKelompok = [
+    {'nama': 'Galuh Sischa Panglipury', 'nim': '124220009', 'kelas': 'SI-C'},
+    // Anda bisa menambahkan data lainnya jika diperlukan
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Data Mahasiswa'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView.builder(
+          itemCount: dataKelompok.length,
+          itemBuilder: (context, index) {
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              elevation: 4,
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              child: ListTile(
+                title: Text(
+                  dataKelompok[index]['nama']!,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NIM\t: ${dataKelompok[index]['nim']!}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      'Kelas\t: ${dataKelompok[index]['kelas']!}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class KalkulatorPage extends StatefulWidget {
+  @override
+  _KalkulatorPageState createState() => _KalkulatorPageState();
+}
+
+class _KalkulatorPageState extends State<KalkulatorPage> {
+  final TextEditingController _number1Controller = TextEditingController();
+  final TextEditingController _number2Controller = TextEditingController();
+  String _result = '';
+
+  void _calculate(bool isAddition) {
+    try {
+      if (_number1Controller.text.isNotEmpty &&
+          _number2Controller.text.isNotEmpty) {
+        int number1 = int.parse(_number1Controller.text);
+        int number2 = int.parse(_number2Controller.text);
+        int result = isAddition ? number1 + number2 : number1 - number2;
+        setState(() {
+          _result = result.toString();
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Harap masukkan angka yang valid')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mari Berhitung Penjumlahan dan Pengurangan Disini'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _number1Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Masukkan Angka Pertama',
+                prefixIcon: Icon(Icons.looks_one),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: _number2Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Masukkan Angka Kedua',
+                prefixIcon: Icon(Icons.looks_two),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () => _calculate(true),
+              child: Text('Tambah', style: TextStyle(fontSize: 18)),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => _calculate(false),
+              child: Text('Kurang', style: TextStyle(fontSize: 18)),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Hasil: $_result',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class GanjilGenapPage extends StatefulWidget {
+  @override
+  _GanjilGenapPageState createState() => _GanjilGenapPageState();
+}
+
+class _GanjilGenapPageState extends State<GanjilGenapPage> {
+  final TextEditingController _numberController = TextEditingController();
+  String _result = '';
+
+  void _checkGanjilGenap() {
+    try {
+      if (_numberController.text.isNotEmpty) {
+        int number = int.parse(_numberController.text);
+        setState(() {
+          _result = number % 2 == 0
+              ? '$number adalah Bilangan Genap'
+              : '$number adalah Bilangan Ganjil';
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Harap masukkan angka yang valid')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Bilangan Ganjil/Genap'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _numberController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Masukkan Angka',
+                prefixIcon: Icon(Icons.calculate),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _checkGanjilGenap,
+              child: Text('Cek Ganjil/Genap', style: TextStyle(fontSize: 18)),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Hasil: $_result',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
